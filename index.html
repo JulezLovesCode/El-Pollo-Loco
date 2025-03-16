@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>El Pollo Loco</title>
+    <link
+      rel="shortcut icon"
+      href="assets/images/3_enemies_chicken/chicken_small/1_walk/2_w.png"
+      type="image/x-icon"
+    />
+    <link rel="stylesheet" href="styles/main.css" />
+
+    <!-- Core Engine - Basis-Klassen zuerst -->
+    <script src="src/core/visual-element.class.js"></script>
+    <script src="src/core/game-entity.class.js"></script>
+
+    <!-- UI Components -->
+    <script src="src/ui/status-display.class.js"></script>
+    <script src="src/ui/health-display.class.js"></script>
+    <script src="src/ui/coin-counter.class.js"></script>
+    <script src="src/ui/item-counter.class.js"></script>
+    <script src="src/ui/boss-health-display.class.js"></script>
+    <script src="src/ui/end-screen.class.js"></script>
+
+    <!-- Controllers -->
+    <script src="src/controllers/audio-manager.js"></script>
+    <script src="src/controllers/input-manager.class.js"></script>
+    <script src="src/controllers/ui-helpers.js"></script>
+
+    <!-- Game Entities - Basis-Entitäten zuerst -->
+    <script src="src/entities/collectible.class.js"></script>
+    <script src="src/entities/background-object.class.js"></script>
+    <script src="src/entities/cloud.class.js"></script>
+    <script src="src/entities/coin.class.js"></script>
+    <script src="src/entities/projectile-item.class.js"></script>
+    <script src="src/entities/player.class.js"></script>
+    <script src="src/entities/enemy.class.js"></script>
+    <script src="src/entities/small-enemy.class.js"></script>
+    <script src="src/entities/boss-enemy.class.js"></script>
+
+    <!-- Game Logic -->
+    <script src="src/scenes/level.class.js"></script>
+    <script src="src/scenes/level1.js"></script>
+
+    <!-- Game World nach allen anderen Klassen -->
+    <script src="src/core/game-world.class.js"></script>
+
+    <!-- Hauptdatei zuletzt -->
+    <script src="src/main.js"></script>
+  </head>
+
+  <body onload="initStartScreen()">
+    <!-- Game Container holds all game content -->
+    <div id="gameContainer">
+      <!-- Main Menu (shown at start) -->
+      <!-- Änderungen hier beginnen -->
+      <div
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          width: 100%;
+          margin-bottom: 20px;
+        "
+      >
+        <!-- Main Menu (shown at start) -->
+        <div id="mainMenu" class="menuContainer" style="margin-bottom: 0">
+          <button
+            id="startGameButton"
+            class="menuButton br-16"
+            onclick="startGameAndHideMenus()"
+          >
+            Spiel starten
+          </button>
+          <button
+            id="creditsButton"
+            class="menuButton br-16"
+            onclick="showCredits()"
+          >
+            Impressum
+          </button>
+          <button
+            id="instructionsButton"
+            class="menuButton br-16"
+            onclick="showControls()"
+          >
+            Steuerung
+          </button>
+        </div>
+
+        <!-- Icons neben den Buttons -->
+        <div
+          id="audioFullscreenControls"
+          style="display: flex; margin-left: 20px"
+        >
+          <img
+            id="audioToggle"
+            onclick="toggleAudio()"
+            src="assets/images/12_game_ui/volume.png"
+            alt="Sound Icon"
+            width="40"
+            height="40"
+            style="margin: 0 10px; cursor: pointer"
+          />
+          <img
+            id="fullscreenToggle"
+            onclick="toggleFullScreen()"
+            src="assets/images/12_game_ui/full-screen.png"
+            alt="Fullscreen Icon"
+            width="40"
+            height="40"
+            style="margin: 0 10px; cursor: pointer"
+          />
+        </div>
+      </div>
+
+      <!-- Game Over Menu (hidden initially, shown after game ends) -->
+      <div id="gameOverMenu" class="menuContainer d-none">
+        <button
+          id="restartButton"
+          class="menuButton br-16"
+          onclick="restartGame()"
+        >
+          Neustart
+        </button>
+        <button
+          id="mainMenuButton"
+          class="menuButton br-16"
+          onclick="returnToMainMenu()"
+        >
+          Hauptmenü
+        </button>
+      </div>
+
+      <!-- Game Controls (shown during gameplay) -->
+      <div class="gameControls d-none"></div>
+
+      <!-- How to Play Instructions (hidden initially) -->
+      <div id="instructionsContent" class="modalContent d-none br-16">
+        <img
+          class="closeButton"
+          onclick="returnToMainMenu()"
+          src="assets/images/12_game_ui/close.png"
+          alt=""
+          width="32px"
+          height="32px"
+        />
+        <div id="instructionsDetails">
+          <table id="controlsTable">
+            <tbody>
+              <tr>
+                <td class="controlText">&nbsp;Bewegung Links</td>
+                <td>
+                  &nbsp;<img
+                    class="controlIcon"
+                    src="assets/images/12_game_ui/left-arrow-button-icon.png"
+                    alt=""
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="controlText">&nbsp;Bewegung Rechts</td>
+                <td>
+                  &nbsp;<img
+                    class="controlIcon"
+                    src="assets/images/12_game_ui/right-arrow-button-icon.png"
+                    alt=""
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="controlText">&nbsp;Springen</td>
+                <td>
+                  &nbsp;<img
+                    class="controlIcon"
+                    src="assets/images/12_game_ui/space-button-icon.png"
+                    alt=""
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="controlText">&nbsp;Item werfen</td>
+                <td>
+                  &nbsp;<img
+                    class="controlIcon"
+                    src="assets/images/12_game_ui/d-button-icon.png"
+                    alt=""
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Mobile Controls Container -->
+      <div id="mobileControlsContainer" class="d-none">
+        <div class="mobileLeftControls d-flex">
+          <button id="mobileLeftButton" class="mobileControlButton">
+            <img
+              src="assets/images/12_game_ui/left-arrow.png"
+              alt="Left Arrow"
+            />
+          </button>
+          <button id="mobileJumpButton" class="mobileControlButton">
+            <img src="assets/images/12_game_ui/up-arrow.png" alt="Up Arrow" />
+          </button>
+        </div>
+        <div class="mobileRightControls d-flex">
+          <button id="mobileThrowButton" class="mobileControlButton">
+            <img src="assets/images/12_game_ui/bottle.png" alt="Bottle" />
+          </button>
+          <button id="mobileRightButton" class="mobileControlButton">
+            <img
+              src="assets/images/12_game_ui/right-arrow.png"
+              alt="Right Arrow"
+            />
+          </button>
+        </div>
+      </div>
+
+      <!-- Credits Section (hidden initially) -->
+      <div id="creditsContent" class="modalContent d-none br-16">
+        <img
+          class="closeButton"
+          onclick="returnToMainMenu()"
+          src="assets/images/12_game_ui/close.png"
+          alt=""
+          width="32px"
+          height="32px"
+        />
+        <div id="creditsDetails">
+          <h2>Impressum</h2>
+          <p>Julian Seeger</p>
+          <p>Florianstraße 40</p>
+          <p>41372 Niederkrüchten</p>
+          <h3>Rechtliche Information</h3>
+          <p>
+            In Übereinstimmung mit den Vorschriften zur Online-Streitbeilegung
+            möchten wir Sie über die Online-Streitbeilegungsplattform
+            informieren.
+          </p>
+
+          <p>
+            Verbraucher können Beschwerden auf der
+            Online-Streitbeilegungsplattform der Europäischen Kommission
+            einreichen unter
+            <a
+              href="https://ec.europa.eu/consumers/odr/main/index.cfm?event=main.home2.show&amp;lng=EN"
+              target="_blank"
+              rel="follow noopener"
+            >
+              https://ec.europa.eu/consumers/odr/ </a
+            >.
+          </p>
+
+          <h3>Bildnachweise</h3>
+
+          <p>
+            Alle in diesem Spiel verwendeten Bilder, Fotos und Grafiken sind
+            urheberrechtlich geschützt.
+          </p>
+
+          <p>
+            Spielassets wurden von verschiedenen talentierten Künstlern
+            erstellt.
+          </p>
+        </div>
+      </div>
+
+      <!-- Game Canvas -->
+      <canvas id="gameCanvas" class="br-16" width="720" height="480"></canvas>
+    </div>
+
+    <!-- Device orientation warning - MOVED OUTSIDE GAME CONTAINER -->
+    <div id="deviceOrientationWarning" class="d-none">
+      <img
+        src="assets/images/13_turn_device/rotation.png"
+        alt="turn device image"
+      />
+      <h2>Please turn your<br />Device!</h2>
+    </div>
+  </body>
+</html>

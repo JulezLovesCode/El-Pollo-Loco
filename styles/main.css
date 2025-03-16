@@ -1,0 +1,490 @@
+/* audiowide-regular - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'Audiowide';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../assets/fonts/audiowide-v20-latin-regular.woff2') format('woff2');
+}
+
+/* Anwendung der Schriftart auf alle Elemente */
+body,
+button,
+h1,
+h2,
+h3,
+p,
+td,
+th {
+  font-family: 'Audiowide', sans-serif;
+}
+
+/* Falls noch spezifischere Elemente die Schriftart benötigen */
+.menuButton,
+.controlText,
+#instructionsContent,
+#creditsContent {
+  font-family: 'Audiowide', sans-serif;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Diese Zeile hinzufügen */
+  background-image: url('../assets/images/10_page_background/desert.jpg');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100vh;
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  overflow-x: hidden;
+}
+
+h1 {
+  color: #ffb03b;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+  font-size: 64px;
+  margin-bottom: 20px;
+}
+
+#gameCanvas {
+  background-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  width: 936px;
+  height: 624px;
+  order: 2; /* Ensure canvas appears after menu but before controls */
+}
+
+#gameContainer {
+  position: relative;
+  width: 936px;
+  height: 624px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px; /* Optional: etwas Abstand von oben */
+}
+
+.d-none {
+  display: none !important;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.br-16 {
+  border-radius: 16px;
+}
+
+.menuContainer {
+  display: flex;
+  flex-direction: row; /* Buttons nebeneinander statt untereinander */
+  justify-content: center; /* Zentriert die Buttons horizontal */
+  gap: 20px; /* Abstand zwischen den Buttons */
+  margin-bottom: 30px; /* Abstand zur Canvas nach unten */
+  z-index: 2;
+  order: 1; /* Ensure menu appears first */
+}
+
+.menuButton {
+  width: 200px;
+  height: 50px;
+  border: none;
+  background-color: #ffb03b;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 125ms ease-in-out;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.menuButton:hover {
+  transform: scale(1.1);
+  background-color: #ff9500;
+}
+
+.mobileControlButton {
+  width: 60px;
+  height: 60px;
+  margin: 8px;
+  padding: 0;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+}
+
+.mobileControlButton img {
+  width: 35px;
+  height: 35px;
+}
+
+#mobileControlsContainer {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 936px;
+  margin: 10px auto 0;
+  z-index: 3;
+  order: 3; /* Ensure controls appear after canvas */
+}
+
+.gameControls {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  z-index: 2;
+  display: flex;
+  gap: 8px;
+}
+
+#gameOverScreen {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  z-index: 10;
+}
+
+#instructionsContent,
+#creditsContent {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #f5e8c9;
+  padding: 24px;
+  min-width: 350px;
+  z-index: 10;
+  max-height: 80%;
+  overflow-y: auto;
+}
+
+.closeButton {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  cursor: pointer;
+}
+
+#controlsTable {
+  width: 100%;
+  margin-top: 16px;
+}
+
+.controlText {
+  font-size: 18px;
+  padding: 8px;
+}
+
+.controlIcon {
+  height: 35px;
+}
+
+/* Device orientation warning - Fixed styling */
+#deviceOrientationWarning {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #ffb03b;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  text-align: center;
+  color: white;
+}
+
+#deviceOrientationWarning img {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 16px;
+}
+
+#audioToggle,
+#fullscreenToggle {
+  width: 40px;
+  height: 40px;
+  margin: 0 10px;
+  cursor: pointer;
+}
+
+/* Mobile responsive foundation - Apply to all screen sizes */
+@media (max-width: 1400px) {
+  body,
+  html {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  #gameContainer {
+    width: 100% !important;
+    max-width: 100vw;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: auto !important; /* Allow container to expand for controls */
+    padding-bottom: 20px; /* Ensure space at bottom */
+  }
+
+  #gameCanvas {
+    width: 90% !important;
+    height: auto !important;
+    max-height: 75vh !important;
+    object-fit: contain;
+  }
+
+  /* Use consistent proportional sizing for buttons */
+  .menuButton {
+    width: 25vw !important;
+    height: 5vh !important;
+    min-height: 30px !important; /* Ensure minimum touchable size */
+    font-size: min(
+      16px,
+      2.5vmin
+    ) !important; /* Use the smaller of two values */
+    padding: 0 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  #audioToggle,
+  #fullscreenToggle {
+    width: 5vmin !important;
+    height: 5vmin !important;
+    min-width: 24px !important; /* Ensure minimum touchable size */
+    min-height: 24px !important;
+  }
+}
+
+/* Landscape mode adjustments */
+@media (max-width: 1400px) and (orientation: landscape) {
+  body {
+    overflow: hidden;
+  }
+
+  #gameContainer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100% !important;
+    max-height: 100vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  /* Adapt canvas size */
+  #gameCanvas {
+    width: 85% !important;
+    height: auto !important;
+    max-height: 65vh !important; /* Reduced to ensure room for controls */
+    margin: 0 auto !important;
+    margin-top: 10px !important;
+    margin-bottom: 12px !important; /* Add space before controls */
+  }
+
+  h1 {
+    display: none;
+  }
+
+  /* Always show mobile controls in landscape with correct positioning */
+  #mobileControlsContainer {
+    display: flex !important;
+    position: relative !important;
+    width: 85% !important; /* Match canvas width */
+    margin: 0 auto !important;
+    z-index: 1000;
+    padding: 0 !important;
+    justify-content: space-around !important;
+    order: 3 !important; /* Force controls after canvas */
+  }
+
+  /* Improve control button styling */
+  .mobileControlButton {
+    width: min(40px, 8vmin) !important;
+    height: min(40px, 8vmin) !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+    margin: 4px !important;
+  }
+
+  .mobileControlButton img {
+    width: min(20px, 4vmin) !important;
+    height: min(20px, 4vmin) !important;
+    min-width: 16px !important;
+    min-height: 16px !important;
+  }
+
+  /* Improve control groups layout */
+  .mobileLeftControls,
+  .mobileRightControls {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+}
+
+/* SMALL DEVICES (iPhone SE, smaller phones) */
+@media (max-width: 380px) and (orientation: landscape) {
+  /* Fine-tune for small screens */
+  #gameCanvas {
+    max-height: 60vh !important; /* Further reduced to ensure controls fit */
+    margin-bottom: 8px !important;
+  }
+
+  /* Menu container needs to be more compact */
+  .menuContainer {
+    gap: 8px !important;
+    margin-bottom: 8px !important;
+  }
+
+  /* Ensure buttons remain usable size */
+  .menuButton {
+    width: 22vw !important;
+    min-width: 70px !important;
+    height: 5vh !important;
+    min-height: 24px !important;
+    font-size: 12px !important;
+    white-space: nowrap !important;
+  }
+
+  /* Make controls properly sized for small screens */
+  .mobileControlButton {
+    width: min(36px, 8vmin) !important;
+    height: min(36px, 8vmin) !important;
+    margin: 3px !important;
+  }
+
+  .mobileControlButton img {
+    width: min(18px, 4vmin) !important;
+    height: min(18px, 4vmin) !important;
+  }
+
+  /* Adjust audio and fullscreen controls */
+  #audioToggle,
+  #fullscreenToggle {
+    width: min(24px, 5vmin) !important;
+    height: min(24px, 5vmin) !important;
+    margin: 0 4px !important;
+  }
+
+  /* Tighter control spacing for small screens */
+  .mobileLeftControls,
+  .mobileRightControls {
+    gap: 6px !important;
+  }
+}
+
+/* MEDIUM DEVICES (iPhone 14 Pro Max, most smartphones) */
+@media (min-width: 381px) and (max-width: 767px) and (orientation: landscape) {
+  #gameCanvas {
+    max-height: 62vh !important;
+    margin-bottom: 10px !important;
+  }
+
+  .menuButton {
+    width: 22vw !important;
+    min-width: 80px !important;
+    height: 5vh !important;
+    min-height: 28px !important;
+    font-size: 14px !important;
+  }
+
+  /* Proportional controls with proper sizing */
+  .mobileControlButton {
+    width: min(45px, 8vmin) !important;
+    height: min(45px, 8vmin) !important;
+  }
+
+  .mobileControlButton img {
+    width: min(22px, 4vmin) !important;
+    height: min(22px, 4vmin) !important;
+  }
+}
+
+/* TABLETS AND LARGER PHONES */
+@media (min-width: 768px) and (max-width: 1400px) and (orientation: landscape) {
+  #gameCanvas {
+    max-height: 68vh !important;
+    margin-bottom: 12px !important;
+  }
+
+  .menuButton {
+    width: 20vw !important;
+    min-width: 120px !important;
+    height: 6vh !important;
+    min-height: 35px !important;
+    font-size: min(18px, 2.2vmin) !important;
+  }
+
+  .mobileControlButton {
+    width: min(60px, 8vmin) !important;
+    height: min(60px, 8vmin) !important;
+  }
+
+  .mobileControlButton img {
+    width: min(30px, 4vmin) !important;
+    height: min(30px, 4vmin) !important;
+  }
+
+  #audioToggle,
+  #fullscreenToggle {
+    width: min(40px, 6vmin) !important;
+    height: min(40px, 6vmin) !important;
+  }
+}
+
+/* iPad Pro and larger tablets */
+@media (min-width: 1024px) and (max-width: 1400px) and (orientation: landscape) {
+  #gameCanvas {
+    width: 75% !important;
+    max-height: 70vh !important;
+  }
+
+  .menuButton {
+    width: 18vw !important;
+    min-width: 140px !important;
+    height: 6vh !important;
+    min-height: 40px !important;
+    font-size: min(20px, 2.2vmin) !important;
+  }
+}
+
+/* Portrait orientation warning - MODIFIED: changed from 1400px to 800px */
+@media (max-width: 800px) and (orientation: portrait) {
+  #mobileControlsContainer {
+    display: none !important;
+  }
+
+  #deviceOrientationWarning {
+    display: flex !important;
+  }
+}
+
+/* Desktop devices - MODIFIED: changed from 1401px to 801px */
+@media (min-width: 801px) {
+  #mobileControlsContainer {
+    display: none !important;
+  }
+
+  #deviceOrientationWarning {
+    display: none !important;
+  }
+}
